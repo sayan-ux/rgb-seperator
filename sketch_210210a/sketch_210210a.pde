@@ -2,16 +2,17 @@ PImage img;
 PImage redchannel;
 PImage bluechannel;
 PImage greenchannel;
-float p=0;
+int p=0;
 
-
+static String fileName="b.jpg";
+static long lastTime=0;
 void setup()
 {
  //size(1920, 1080);
- img = loadImage("a.jpg");
- redchannel = loadImage("a.jpg");
- bluechannel = loadImage("a.jpg");
- greenchannel = loadImage("a.jpg");
+ img = loadImage(fileName);
+ redchannel = loadImage(fileName);
+ bluechannel = loadImage(fileName);
+ greenchannel = loadImage(fileName);
  //image(img, 0, 0);
  p=img.height*img.width;
  noLoop();
@@ -25,33 +26,38 @@ int index(int x, int y)
 void draw()
 {
 img.loadPixels();
-float c=0;
-for(int j=0; j<img.height; j++){
-  for(int i=0; i<img.width; i++){
-    
-    color pix = img.pixels[index(i, j)];
+int c=0;
+    for(int i=0;i<img.width*img.height;i++){
+    color pix = img.pixels[i];
     float r=red(pix);
     float g=green(pix);
     float b=blue(pix);
-    redchannel.pixels[index(i,j)]=color(r,0.0f,0.0f);
-    greenchannel.pixels[index(i,j)]=color(0.0f,g,0.0f);
-    bluechannel.pixels[index(i,j)]=color(0.0f,0.0f,b);
+    redchannel.pixels[i]=color(r,0.0f,0.0f);
+    greenchannel.pixels[i]=color(0.0f,g,0.0f);
+    bluechannel.pixels[i]=color(0.0f,0.0f,b);
     
     ++c;
-    System.out.println(c/p*100+"%");
+    
+    long now=System.currentTimeMillis();
+    
+    if(now-lastTime>=1 * 1000) {
+      System.out.println((float)c/p*100+"%");
+      lastTime=now;
+    }
+    
     if(c==p){
       System.out.println("Done!!");
-    } 
+    }
 
-}
 }
 redchannel.updatePixels();
 greenchannel.updatePixels();
 bluechannel.updatePixels();
 
+System.out.println("Started writing");
 redchannel.save("redcahnnel.png");
 greenchannel.save("greencahnnel.png");
 bluechannel.save("bluecahnnel.png");
-
+System.out.println("Ended writing");
 
 }
